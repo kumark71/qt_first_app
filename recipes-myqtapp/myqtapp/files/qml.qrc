@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/">
+        <file>main.qml</file>
+        <file>images/splash_screen_img.png</file>
+        <file>home_screen.qml</file>
+    </qresource>
+</RCC>

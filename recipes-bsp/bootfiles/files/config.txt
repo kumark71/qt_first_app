@@ -1,0 +1,5 @@
+dtparam=i2c_arm=on
+dtparam=spi=on
+enable_uart=1
+dtoverlay=vc4-kms-v3d
+dtoverlay=vc4-kms-dsi-7inch

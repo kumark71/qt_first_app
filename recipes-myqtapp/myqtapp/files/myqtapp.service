@@ -1,0 +1,12 @@
+[Unit]
+Description=My Custom Qt App
+
+[Service]
+User=root
+Environment=QT_QPA_PLATFORM=eglfs
+Environment=QT_IM_MODULE=qtvirtualkeyboard
+ExecStart=/usr/bin/firstapp
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
