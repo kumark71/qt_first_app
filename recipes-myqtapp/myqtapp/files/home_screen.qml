@@ -7,14 +7,17 @@ Rectangle {
     width: 800
     height: 480
     color: "#31313D"
+    focus: true  // ✅ Root can take focus to clear input
 
-    // ✅ Full-screen MouseArea to close keyboard when clicking outside
     MouseArea {
         id: backgroundMouseArea
         anchors.fill: parent
         z: 0
         onClicked: {
-            inputField.focus = false  // Remove focus from TextField
+            console.log("Background clicked")
+            inputField.focus = false
+            root.forceActiveFocus()
+            Qt.inputMethod.hide()  // ✅ FORCE keyboard to hide
         }
     }
 
@@ -22,10 +25,10 @@ Rectangle {
         id: mainContent
         spacing: 20
         anchors.centerIn: parent
-        z: 1  // Bring input above MouseArea
+        z: 1
 
         Label {
-            text: "Welcome to Home Screen (SmartQR V1)!"
+            text: "Welcome to Home Screen (SmartQR V2)!"
             font.pixelSize: 30
             color: "white"
         }
@@ -36,18 +39,20 @@ Rectangle {
             placeholderText: "Enter something..."
             font.pixelSize: 18
 
-            inputMethodHints: Qt.ImhNone
-
             Keys.onReturnPressed: {
                 console.log("Return pressed: " + inputField.text)
                 outputLabel.text = inputField.text
                 inputField.focus = false
+                root.forceActiveFocus()
+                Qt.inputMethod.hide()
             }
 
-            // ✅ MouseArea inside TextField to handle click focus
             MouseArea {
                 anchors.fill: parent
-                onClicked: inputField.forceActiveFocus()
+                onClicked: {
+                    console.log("Input clicked")
+                    inputField.forceActiveFocus()
+                }
             }
         }
 
@@ -63,17 +68,31 @@ Rectangle {
             onClicked: {
                 outputLabel.text = inputField.text
                 inputField.focus = false
+                root.forceActiveFocus()
+                Qt.inputMethod.hide()
             }
         }
     }
 
+    // ✅ FINAL: Bind both visible & height
     InputPanel {
         id: inputPanel
         anchors.left: parent.left
         anchors.right: parent.right
 
-        // ✅ This makes keyboard appear only when needed
-        height: Qt.inputMethod.visible ? implicitHeight : 0
+        visible: Qt.inputMethod.visible   // ✅ This makes it truly hide/show
+        height: visible ? implicitHeight : 0
         y: parent.height - height
+    }
+
+    Connections {
+        target: Qt.inputMethod
+        function onVisibleChanged() {
+            if (Qt.inputMethod.visible) {
+                console.log("Keyboard is shown")
+            } else {
+                console.log("Keyboard is hidden")
+            }
+        }
     }
 }
